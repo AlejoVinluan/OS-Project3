@@ -42,7 +42,31 @@ public class Project3 {
         for(int i = 0; i < numJobs; i++){
             System.out.print(String.valueOf((char)(i + 'A')));
         }
+        int currId = 0;
+        ArrayList<jobNode> jobList = new ArrayList<jobNode>();
+        jobList.add(new jobNode(currId, jobsArr[currId][1]));
+        currId++;
         
+        int time = 0;
+
+        while(jobList.size() > 0){
+            jobNode nextNode = jobList.get(0);
+            System.out.println();
+            for(int i = 0; i < nextNode.getJobId(); i++){
+                System.out.print(" ");
+            }
+            System.out.print("#");
+            nextNode.decrTime();
+            jobList.remove(nextNode);
+            if(nextNode.getTime() > 0){
+                jobList.add(nextNode);
+            }
+            time++;
+            if(currId < numJobs && time >= jobsArr[currId][0]){
+                jobList.add(new jobNode(currId, jobsArr[currId][1]));
+                currId++;
+            }
+        }
     }
     
     public static void spn(int[][] jobs){
@@ -124,7 +148,8 @@ public class Project3 {
         System.out.println("=======Feedback=======");
         for(int i = 0; i < numJobs; i++){
             System.out.print(String.valueOf((char)(i + 'A')));
-        } 
+        }
+        
     }
 
     public static jobNode findMinTime(ArrayList<jobNode> jobList){
@@ -147,9 +172,6 @@ public class Project3 {
             System.out.println("2nd argument should be implementation type (i.e. [RR/SRT/FB/ALL])");
             System.exit(1);
         }
-
-        int[] taco = new int[1];
-        taco[0] = 5;
 
         readJobs(args[0]);
         switch(args[1].toLowerCase()){
