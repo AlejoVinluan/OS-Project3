@@ -44,8 +44,9 @@ public class Project3 {
         }
         
     }
-    public static void srt(int[][] jobs){
-        System.out.println("=Shortest Remaining Time=");
+    
+    public static void spn(int[][] jobs){
+        System.out.println("=Shortest Process Next=");
         for(int i = 0; i < numJobs; i++){
             System.out.print(String.valueOf((char)(i + 'A')));
         }
@@ -86,11 +87,57 @@ public class Project3 {
         }
     }
 
+    public static void srt(int[][] jobs){
+        System.out.println("=Shortest Process Next=");
+        for(int i = 0; i < numJobs; i++){
+            System.out.print(String.valueOf((char)(i + 'A')));
+        }
+
+        int currId = 0;
+        ArrayList<jobNode> jobList = new ArrayList<jobNode>();
+        jobList.add(new jobNode(currId, jobsArr[currId][1]));
+        currId++;
+
+        int time = 0;
+
+        while(jobList.size() > 0){
+            jobNode shortestRemainingNode = findMinTime(jobList);
+            System.out.println();
+            for(int i = 0; i < shortestRemainingNode.getJobId(); i++){
+                System.out.print(" ");
+            }
+            System.out.print("#");
+            shortestRemainingNode.decrTime();
+            jobList.remove(shortestRemainingNode);
+            if(shortestRemainingNode.getTime() > 0){
+                jobList.add(shortestRemainingNode);
+            }
+            time++;
+            if(currId < numJobs && time >= jobsArr[currId][0]){
+                jobList.add(new jobNode(currId, jobsArr[currId][1]));
+                currId++;
+            }
+        }
+    }
+
     public static void fb(int[][] jobs){
         System.out.println("=======Feedback=======");
         for(int i = 0; i < numJobs; i++){
             System.out.print(String.valueOf((char)(i + 'A')));
         } 
+    }
+
+    public static jobNode findMinTime(ArrayList<jobNode> jobList){
+        if(jobList.size() < 1){
+            return null;
+        }
+        jobNode minNode = jobList.get(0);
+        for(int i = 1; i < jobList.size(); i++){
+            if(minNode.getTime() > jobList.get(i).getTime()){
+                minNode = jobList.get(i);
+            }
+        }
+        return minNode;
     }
     
     public static void main(String[] args){
