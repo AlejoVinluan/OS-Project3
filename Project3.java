@@ -26,6 +26,11 @@ public class Project3 {
         }
 
         numJobs = jobList.size();
+
+        if(numJobs < 1){
+            System.exit(0);
+        }
+
         jobsArr = new int[numJobs][2];
         for(int i = 0; i < numJobs; i++){
             jobsArr[i] = jobList.get(i);
@@ -34,12 +39,58 @@ public class Project3 {
 
     public static void rr(int[][] jobs){
         System.out.println("=====Round Robin=====");
+        for(int i = 0; i < numJobs; i++){
+            System.out.print(String.valueOf((char)(i + 'A')));
+        }
+        
     }
     public static void srt(int[][] jobs){
         System.out.println("=Shortest Remaining Time=");
+        for(int i = 0; i < numJobs; i++){
+            System.out.print(String.valueOf((char)(i + 'A')));
+        }
+        int currId = 0;
+        ArrayList<jobNode> jobList = new ArrayList<jobNode>();
+        jobList.add(new jobNode(currId,jobsArr[currId][1]));
+        currId++;
+
+        int time = 0;
+        int jobsArrPtr = 0;
+
+        while(jobList.size() > 0){
+            // Find job with lowest time
+            jobNode currLowestNode = jobList.get(0);
+            int currLowestTime = currLowestNode.getTime();
+            for(int currJobIdx = 1; currJobIdx < jobList.size(); currJobIdx++){
+                if(jobList.get(currJobIdx).getTime() < currLowestTime){
+                    currLowestTime = jobList.get(currJobIdx).getTime();
+                    currLowestNode = jobList.get(currJobIdx);
+                }
+            }
+            
+            // Found job with shortest remaining time. Now print while increment time
+            for(int i = 0; i < currLowestTime; i++){
+                System.out.println();
+                for(int j = 0; j < currLowestNode.getJobId(); j++){
+                    System.out.print(" ");
+                }
+                System.out.print("#");
+                time++;
+                if(jobsArrPtr < numJobs && currId < numJobs && time >= jobsArr[jobsArrPtr][0]){
+                    jobList.add(new jobNode(currId,jobsArr[currId][1]));
+                    jobsArrPtr++;
+                    currId++;
+                }
+            }
+            jobList.remove(currLowestNode);
+        }
     }
+
     public static void fb(int[][] jobs){
         System.out.println("=======Feedback=======");
+        for(int i = 0; i < numJobs; i++){
+            System.out.print(String.valueOf((char)(i + 'A')));
+        } 
     }
     
     public static void main(String[] args){
@@ -49,6 +100,9 @@ public class Project3 {
             System.out.println("2nd argument should be implementation type (i.e. [RR/SRT/FB/ALL])");
             System.exit(1);
         }
+
+        int[] taco = new int[1];
+        taco[0] = 5;
 
         readJobs(args[0]);
         switch(args[1].toLowerCase()){
