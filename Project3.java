@@ -149,7 +149,77 @@ public class Project3 {
         for(int i = 0; i < numJobs; i++){
             System.out.print(String.valueOf((char)(i + 'A')));
         }
-        
+
+        ArrayList<jobNode> zeroQ = new ArrayList<jobNode>();
+        ArrayList<jobNode> oneQ = new ArrayList<jobNode>();
+        ArrayList<jobNode> twoQ = new ArrayList<jobNode>();
+
+        int completedJobs = 0;
+        int time = 0;
+        int currId = 0;
+
+        zeroQ.add(new jobNode(currId,jobsArr[currId][1]));
+
+        while(completedJobs < numJobs){
+            System.out.println();
+            if(zeroQ.size() > 0){
+                jobNode nextJob = zeroQ.get(0);
+                zeroQ.remove(0);
+                for(int i = 0; i < nextJob.getJobId(); i++){
+                    System.out.print(" ");
+                }
+                System.out.print("#");
+                nextJob.decrTime();
+                if(nextJob.getTime() > 0){
+                    oneQ.add(nextJob);
+                } else {
+                    completedJobs++;
+                }
+                time++;
+                if(currId < numJobs && time >= jobsArr[currId][0]){
+                    zeroQ.add(new jobNode(currId, jobsArr[currId][1]));
+                    currId++;
+                }
+            }
+            else if(oneQ.size() > 0){
+                jobNode nextJob = oneQ.get(0);
+                oneQ.remove(0);
+                for(int i = 0; i < nextJob.getJobId(); i++){
+                    System.out.print(" ");
+                }
+                System.out.print("#");
+                nextJob.decrTime();
+                if(nextJob.getTime() > 0){
+                    oneQ.add(nextJob);
+                } else {
+                    completedJobs++;
+                }
+                time++;
+                if(currId < numJobs && time >= jobsArr[currId][0]){
+                    zeroQ.add(new jobNode(currId, jobsArr[currId][1]));
+                    currId++;
+                }
+            }
+            else{
+                jobNode nextJob = twoQ.get(0);
+                twoQ.remove(0);
+                for(int i = 0; i < nextJob.getJobId(); i++){
+                    System.out.print(" ");
+                }
+                System.out.print("#");
+                nextJob.decrTime();
+                if(nextJob.getTime() > 0){
+                    twoQ.add(nextJob);
+                } else {
+                    completedJobs++;
+                }
+                time++;
+                if(currId < numJobs && time >= jobsArr[currId][0]){
+                    zeroQ.add(new jobNode(currId, jobsArr[currId][1]));
+                    currId++;
+                }
+            }
+        }
     }
 
     public static jobNode findMinTime(ArrayList<jobNode> jobList){
@@ -165,6 +235,8 @@ public class Project3 {
         return minNode;
     }
     
+
+
     public static void main(String[] args){
         if(args.length < 2){
             System.out.println("Incorrect argument count.");
