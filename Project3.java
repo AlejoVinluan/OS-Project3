@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 public class Project3 {
 
-    public static int[][] jobs;
+    public static int[][] jobsArr;
     public static int numJobs;
     
     public static void readJobs(String jobsFile){
@@ -26,12 +26,22 @@ public class Project3 {
         }
 
         numJobs = jobList.size();
-        jobs = new int[numJobs][2];
+        jobsArr = new int[numJobs][2];
         for(int i = 0; i < numJobs; i++){
-            jobs[i] = jobList.get(i);
+            jobsArr[i] = jobList.get(i);
         }
     }
 
+    public static void rr(int[][] jobs){
+        System.out.println("=====Round Robin=====");
+    }
+    public static void srt(int[][] jobs){
+        System.out.println("=Shortest Remaining Time=");
+    }
+    public static void fb(int[][] jobs){
+        System.out.println("=======Feedback=======");
+    }
+    
     public static void main(String[] args){
         if(args.length < 2){
             System.out.println("Incorrect argument count.");
@@ -41,5 +51,20 @@ public class Project3 {
         }
 
         readJobs(args[0]);
+        switch(args[1].toLowerCase()){
+            case "rr":  rr(jobsArr);
+                        break;
+            case "srt": srt(jobsArr);
+                        break;
+            case "fb":  fb(jobsArr);
+                        break;
+            case "all": rr(jobsArr);
+                        srt(jobsArr);
+                        fb(jobsArr);
+                        break;
+            default:    System.out.println("Unable to find implementation.");
+                        System.exit(1);
+        }
+        System.exit(0);
     }
 }
