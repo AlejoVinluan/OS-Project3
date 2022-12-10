@@ -86,28 +86,32 @@ public class Project3 {
         //  arrival time of other jobs can be considered. 
         int time = 0;
 
+        int completedJobs = 0;
         // While jobs exist within the jobList
-        while(jobList.size() > 0){
-            // This will take the next job in the queue
-            jobNode nextNode = jobList.get(0);
-            System.out.println();
-            // Print the number of spaces required to show which job is being done.
-            //  This is found by utilizing the jobId stored within jobNode.
-            //  This jobId is also stored as jobsArr[currId][0]
-            for(int i = 0; i < nextNode.getJobId(); i++){
-                System.out.print(" ");
+        while(completedJobs < numJobs){
+            jobNode nextNode = new jobNode(Integer.MIN_VALUE,Integer.MIN_VALUE);
+            if(jobList.size() > 0){
+                // This will take the next job in the queue
+                nextNode = jobList.get(0);
+                System.out.println();
+                // Print the number of spaces required to show which job is being done.
+                //  This is found by utilizing the jobId stored within jobNode.
+                //  This jobId is also stored as jobsArr[currId][0]
+                for(int i = 0; i < nextNode.getJobId(); i++){
+                    System.out.print(" ");
+                }
+                // Print the "#" that displays which job is being worked on
+                System.out.print("#");
+                // Decrements the remaining time needed for the job.
+                nextNode.decrTime();
+                // Remove the node from the current "queue"
+                jobList.remove(nextNode);
             }
-            // Print the "#" that displays which job is being worked on
-            System.out.print("#");
-            // Decrements the remaining time needed for the job.
-            nextNode.decrTime();
-            // Remove the node from the current "queue"
-            jobList.remove(nextNode);
             // Increment time to show that 1 unit of work was completed.
             time++;
             // currId < numJobs ensures that we don't go out of bounds within jobsArr
             // time >= jobsArr[currId][0] is used so that we can add the next job the queue when it's arrival time has reached
-            if(currId < numJobs && time >= jobsArr[currId][0]){
+            while(currId < numJobs && time >= jobsArr[currId][0]){
                 // Create new job and add into the queue
                 jobList.add(new jobNode(currId, jobsArr[currId][1]));
                 // Increment the current ID of the jobs we are considering from jobsArr
@@ -115,8 +119,10 @@ public class Project3 {
             }
             // Add the job we just worked on back to the queue IF there is still remaining work on that job.
             // The order of this if statement is important so that a new arriving job will be scheduled before this returning job.
-            if(nextNode.getTime() > 0){
+            if(nextNode.getJobId() >= 0 && nextNode.getTime() > 0){
                 jobList.add(nextNode);
+            } else {
+                completedJobs++;
             }
         }
         System.out.println("\n");
@@ -193,29 +199,32 @@ public class Project3 {
         // Time will be incremented after each unit of work done. This is used so that
         //  arrival time of other jobs can be considered. 
         int time = 0;
-
+        int completedJobs = 0;
         // While jobs exist within the jobList
-        while(jobList.size() > 0){
-            // We find the next node by utilizing findMinTime and passing in the jobList.
-            jobNode shortestRemainingNode = findMinTime(jobList);
-            System.out.println();
-            // Print the number of spaces required to show which job is being done.
-            //  This is found by utilizing the jobId stored within jobNode.
-            //  This jobId is also stored as jobsArr[currId][0]
-            for(int i = 0; i < shortestRemainingNode.getJobId(); i++){
-                System.out.print(" ");
+        while(completedJobs < numJobs){
+            jobNode shortestRemainingNode = new jobNode(Integer.MIN_VALUE,Integer.MIN_VALUE);
+            if(jobList.size() > 0){
+                 // We find the next node by utilizing findMinTime and passing in the jobList.
+                shortestRemainingNode = findMinTime(jobList);
+                System.out.println();
+                // Print the number of spaces required to show which job is being done.
+                //  This is found by utilizing the jobId stored within jobNode.
+                //  This jobId is also stored as jobsArr[currId][0]
+                for(int i = 0; i < shortestRemainingNode.getJobId(); i++){
+                    System.out.print(" ");
+                }
+                // Print the "#" that displays which job is being worked on
+                System.out.print("#");
+                // Decrements the remaining time needed for the job.
+                shortestRemainingNode.decrTime();
+                // Remove the job that was just worked on from the queue.
+                jobList.remove(shortestRemainingNode);
             }
-             // Print the "#" that displays which job is being worked on
-            System.out.print("#");
-            // Decrements the remaining time needed for the job.
-            shortestRemainingNode.decrTime();
-            // Remove the job that was just worked on from the queue.
-            jobList.remove(shortestRemainingNode);
             // Increment time to show that 1 unit of work was completed.
             time++;
             // currId < numJobs ensures that we don't go out of bounds within jobsArr
             // time >= jobsArr[currId][0] is used so that we can add the next job the queue when it's arrival time has reached
-            if(currId < numJobs && time >= jobsArr[currId][0]){
+            while(currId < numJobs && time >= jobsArr[currId][0]){
                 // Create new job and add into the queue
                 jobList.add(new jobNode(currId, jobsArr[currId][1]));
                 // Increment the current Id that is being considered.
@@ -223,8 +232,10 @@ public class Project3 {
             }
             // Add the job we just worked on back to the queue IF there is still remaining work on that job.
             // The order of this if statement is important so that a new arriving job will be scheduled before this returning job.
-            if(shortestRemainingNode.getTime() > 0){
+            if(shortestRemainingNode.getJobId() >= 0 && shortestRemainingNode.getTime() > 0){
                 jobList.add(shortestRemainingNode);
+            } else {
+                completedJobs++;
             }
         }
         System.out.println("\n");
@@ -288,7 +299,7 @@ public class Project3 {
                 time++;
                 // currId < numJobs ensures that we don't go out of bounds within jobsArr
                 // time >= jobsArr[currId][0] is used so that we can add the next job the queue when it's arrival time has reached
-                if(currId < numJobs && time >= jobsArr[currId][0]){
+                while(currId < numJobs && time >= jobsArr[currId][0]){
                     // Add the next job to the high priorty queue
                     zeroQ.add(new jobNode(currId, jobsArr[currId][1]));
                     // Increment the current ID of the jobs we are considering from jobsArr
@@ -320,14 +331,14 @@ public class Project3 {
                 time++;
                 // currId < numJobs ensures that we don't go out of bounds within jobsArr
                 // time >= jobsArr[currId][0] is used so that we can add the next job the queue when it's arrival time has reached
-                if(currId < numJobs && time >= jobsArr[currId][0]){
+                while(currId < numJobs && time >= jobsArr[currId][0]){
                     // If there is a new job available, add it to the high priority queue
                     zeroQ.add(new jobNode(currId, jobsArr[currId][1]));
                     // Increment currId to show what the next job should be
                     currId++;
                 }
             // Finally, if there is nothing in the high or medium priorty queues, check the low priorty queue.
-            }else{
+            }else if(twoQ.size() > 0){
                 // Get the nextJob from the low priortiy queue
                 jobNode nextJob = twoQ.get(0);
                 // Remove the job from the queue
@@ -351,10 +362,15 @@ public class Project3 {
                 time++;
                 // currId < numJobs ensures that we don't go out of bounds within jobsArr
                 // time >= jobsArr[currId][0] is used so that we can add the next job the queue when it's arrival time has reached
-                if(currId < numJobs && time >= jobsArr[currId][0]){
+                while(currId < numJobs && time >= jobsArr[currId][0]){
                     // If there is a new job, add it back to zeroQ
                     zeroQ.add(new jobNode(currId, jobsArr[currId][1]));
                     currId++;
+                }
+            } else {
+                time++;
+                while(currId < numJobs && time >= jobsArr[currId][1]){
+                    zeroQ.add(new jobNode(currId,jobsArr[currId][1]));
                 }
             }
         }
